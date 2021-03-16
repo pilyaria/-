@@ -6,6 +6,7 @@ import { Table } from 'antd';
 import { sortableContainer, sortableElement, sortableHandle } from 'react-sortable-hoc';
 import { MenuOutlined } from '@ant-design/icons';
 import arrayMove from 'array-move';
+import { Checkbox, Divider, Button } from 'antd';
 
 const DragHandle = sortableHandle(() => (
   <MenuOutlined style={{ cursor: 'pointer', color: '#999' }} />
@@ -15,47 +16,60 @@ const columns = [
   {
     title: 'Sort',
     dataIndex: 'sort',
-    width: 30,
+    width: 57,
     className: 'drag-visible',
     render: () => <DragHandle />,
   },
   {
-    title: 'Name',
+    title: 'Разделы',
     dataIndex: 'name',
+    //width: 80,
     className: 'drag-visible',
   },
-  {
-    title: 'Age',
-    dataIndex: 'age',
-  },
+ //{
+   // title: 'Action',
+    //dataIndex: 'Action',
+  //},
 
 ];
+
+function callback(key) {
+  console.log(key);
+}
+
+function onChange(e) {
+  console.log(`checked = ${e.target.checked}`);
+}
+
+function onChange(value) {
+  console.log(value);
+}
 
 const data = [
   {
     key: '1',
-    name: 'Ведомости',
-    age: 32,
-    
+    name: <Checkbox defaultChecked disabled>Ведомости</Checkbox>,
     index: 0,
   },
   {
     key: '2',
-    name: 'Настройки',
-    age: 42,
+    name: <Checkbox defaultChecked disabled>Настройки</Checkbox>,
     index: 1,
   },
   {
     key: '3',
-    name: 'Графики',
-    age: 32,
+    name: <Checkbox onChange={onChange}>Графики</Checkbox>,
     index: 2,
   },
-    {
+  {
     key: '4',
-    name: 'Кадр',
-    age: 32,
+    name: <Checkbox onChange={onChange}>Кадр</Checkbox>,
     index: 3,
+  },
+  {
+    key: '5',
+    name: <Checkbox onChange={onChange}>Мнемосхемы</Checkbox>,
+    index: 4,
   },
 ];
 
@@ -64,10 +78,11 @@ const rowSelection = {
     console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
   },
   getCheckboxProps: (record) => ({
-    disabled: record.name === 'Настройки',
+    disabled: record.key == 2,
     // Column configuration not to be checked
-    name: record.name,
+    key: record.key,
   }),
+   
 };
 
 const SortableItem = sortableElement(props => <tr {...props} />);
@@ -109,7 +124,7 @@ class SortableTable extends React.Component {
 
     return (
       <Table
-       
+              
         dataSource={dataSource}
         columns={columns}
         rowKey="index"
@@ -119,6 +134,11 @@ class SortableTable extends React.Component {
             row: this.DraggableBodyRow,
           },
         }}
+         rowSelection={{
+          type: Checkbox,
+          ...rowSelection,
+        }}
+        scroll={{ y: 240 }}
       />
     );
   }
@@ -126,4 +146,10 @@ class SortableTable extends React.Component {
 
 
 
-ReactDOM.render(<SortableTable />, document.getElementById('container'));
+ReactDOM.render(
+  <>
+    <SortableTable />
+    <Button type="primary">Применить</Button>
+    <Button type="primary">Отмена</Button>
+  </>,
+document.getElementById('container'));
